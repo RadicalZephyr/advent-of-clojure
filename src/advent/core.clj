@@ -106,12 +106,14 @@
   (str/replace hash key ""))
 
 (defn mine-seq [key number-of-zeroes]
-  (->> (map (comp (juxt identity (comp count md5))
-                  str)
-            (repeat key)
-            (map inc (range)))
-       (filter #(= (- 32 number-of-zeroes) (second %)))
-       (map (comp (partial strip-key key) first))))
+  (sequence (comp (map #(apply str %))
+                  (map (juxt identity (comp count md5)))
+                  (filter #(= (- 32 number-of-zeroes) (second %)))
+                  (map (comp (partial strip-key key) first))
+                  (take 1))
+            (map vector
+                 (repeat key)
+                 (map inc (range)))))
 
 ;; My key: bgvyzdsv
 (defn day-4 [key]
