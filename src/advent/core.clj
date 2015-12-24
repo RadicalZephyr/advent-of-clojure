@@ -90,3 +90,30 @@
                 (path robo-santa-directions))
         set
         count)))
+
+(defn md5
+  "Generate a md5 checksum for the given string"
+  [token]
+  (let [hash-bytes
+        (doto (java.security.MessageDigest/getInstance "MD5")
+          (.reset)
+          (.update (.getBytes token)))]
+    (.toString
+     (new java.math.BigInteger 1 (.digest hash-bytes)) ; Positive and the size of the number
+     16)))
+
+(defn strip-key [key hash]
+  (str/replace hash key ""))
+
+(defn mine-seq [key number-of-zeroes]
+  (->> (map (comp (juxt identity (comp count md5))
+                  str)
+            (repeat key)
+            (map inc (range)))
+       (filter #(= (- 32 number-of-zeroes) (second %)))
+       (map (comp (partial strip-key key) first))))
+
+;; My key: bgvyzdsv
+(defn day-4 [key]
+  [(first (mine-seq key 5))
+   (first (mine-seq key 6))])
