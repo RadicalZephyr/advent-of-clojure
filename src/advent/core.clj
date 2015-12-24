@@ -1,6 +1,7 @@
 (ns advent.core
-  (:require [clojure.repl :refer :all]
-            [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [clojure.repl :refer :all]
+            [clojure.string :as str]))
 
 (defn slurp-resource [file-name]
   (slurp (io/resource file-name)))
@@ -27,3 +28,29 @@
   (-> file-name
       slurp-resource
       count-parens))
+
+(defn split-specs [box-spec]
+  (->> (str/split box-spec #"x" 3)
+       (map #(Integer/parseInt %))
+       sort))
+
+(defn area [l w]
+  (* l w))
+
+(defn box-area+ [[l w h]]
+  (+ (* 2 (+ (area l w)
+             (area w h)
+             (area l h)))
+     (area l w)))
+
+(defn ribbon-length+ [[l w h]]
+  (+ (* 2 (+ l w))
+     (* l w h)))
+
+(defn day-2 [file-name]
+  (->> file-name
+       io/resource
+       io/reader
+       line-seq
+       (map (comp (juxt box-area+ ribbon-length+) split-specs))
+       (reduce #(map + %1 %2) [0 0])))
