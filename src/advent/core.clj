@@ -1,7 +1,8 @@
 (ns advent.core
   (:require [clojure.java.io :as io]
             [clojure.repl :refer :all]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.core.reducers :as r]))
 
 (defn slurp-resource [file-name]
   (slurp (io/resource file-name)))
@@ -106,14 +107,18 @@
   (str/replace hash key ""))
 
 (defn mine-seq [key number-of-zeroes]
-  (sequence (comp (map #(apply str %))
-                  (map (juxt identity (comp count md5)))
-                  (filter #(= (- 32 number-of-zeroes) (second %)))
-                  (map (comp (partial strip-key key) first))
-                  (take 1))
-            (map vector
-                 (repeat key)
-                 (map inc (range)))))
+  (r/fold conj
+          (->> (map vector
+                    (repeat key)
+                    (map inc (range)))
+               (take 999999)
+               (r/map #(apply str %))
+               (r/map (juxt identity (comp count md5)))
+               (r/filter #(= (- 32 number-of-zeroes) (second %)))
+               (r/map first)
+               (r/map (partial strip-key key))
+               (r/map #(Long/parseLong %))
+               (r/take 1))))
 
 ;; My key: bgvyzdsv
 (defn day-4 [key]
