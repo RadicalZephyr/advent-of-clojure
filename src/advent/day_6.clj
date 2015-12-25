@@ -66,33 +66,32 @@
 
 (defn set-light [array x y value]
   (aset-int array (xy->index x y)
-            value))
+            value)
+  array)
 
-(defn update-light [array x y f]
-  (set-light array x y
-             (f (get-light array x y))))
+(defn update-light [lights [x y] f]
+  (set-light lights x y
+             (f (get-light lights x y))))
 
-(defn light-on [array x y]
-  (update-light array x y inc))
+(defn light-on [lights coord]
+  (update-light lights coord inc))
 
-(defn light-off [array x y]
-  (update-light array x y
+(defn light-off [lights coord]
+  (update-light lights coord
                 (fn [val]
                   (let [new-val (dec val)]
                     (if (= new-val 0)
                       0 new-val)))))
 
-(defn light-toggle [array x y]
-  (update-light array x y (partial + 2)))
+(defn light-toggle [lights coord]
+  (update-light lights coord (partial + 2)))
 
 (defn do-instruction-2 [lights [method c1 c2]]
   (let [update-fn (case method
                     :on light-on
                     :off light-off
                     :toggle light-toggle)]
-    (doseq [[x y] (coords->set c1 c2)]
-      (update-fn lights x y))
-    lights))
+    (reduce update-fn lights (coords->set c1 c2))))
 
 (defn sum-brightness [^ints xs]
   (areduce xs i ret (int 0)
