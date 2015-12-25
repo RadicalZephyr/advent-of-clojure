@@ -1,5 +1,6 @@
 (ns advent.day-6
-  (:require [clojure.set :as set]
+  (:require [clojure.repl :refer :all]
+            [clojure.set :as set]
             [instaparse.core :as insta]
             [advent.core :refer [resource-line-seq]]))
 
@@ -55,23 +56,14 @@
        count))
 
 (defn light-grid []
-  (int-array 1000000))
+  {})
 
 (defn xy->index [x y]
   (+ x
      (* y 1000)))
 
-(defn get-light [array x y]
-  (aget array (xy->index x y)))
-
-(defn set-light [array x y value]
-  (aset-int array (xy->index x y)
-            value)
-  array)
-
-(defn update-light [lights [x y] f]
-  (set-light lights x y
-             (f (get-light lights x y))))
+(defn update-light [lights coord f]
+  (update lights coord (fnil f 0)))
 
 (defn light-on [lights coord]
   (update-light lights coord inc))
@@ -80,7 +72,7 @@
   (update-light lights coord
                 (fn [val]
                   (let [new-val (dec val)]
-                    (if (= new-val 0)
+                    (if (< new-val 0)
                       0 new-val)))))
 
 (defn light-toggle [lights coord]
@@ -93,9 +85,9 @@
                     :toggle light-toggle)]
     (reduce update-fn lights (coords->set c1 c2))))
 
-(defn sum-brightness [^ints xs]
-  (areduce xs i ret (int 0)
-           (+ ret (aget xs i))))
+(defn sum-brightness [lights]
+  (reduce (fn [sum [_ n]] (+ sum n))
+          0 lights))
 
 (defn day-6-2 [file-name]
   (->> file-name
