@@ -5,4 +5,5 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/math.numeric-tower "0.0.4"]
-                 [instaparse "1.4.1"]])
+                 [instaparse "1.4.1"]
+                 [aysylu/loom "0.5.4"]])
