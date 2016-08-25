@@ -1,8 +1,9 @@
 (ns advent.day-9
-  (:require [advent.core :refer [resource-line-seq]]
+  (:require [advent.core :refer [slurp-resource]]
             [clojure.repl :refer :all]
             [instaparse.core :as insta]
-            [loom.graph :as graph]))
+            [loom.graph :as graph]
+            [clojure.math.combinatorics :as combo]))
 
 (def raw-parse-map
   (insta/parser
@@ -10,7 +11,7 @@
     route = origin <' to '> destination <' = '> distance
     <origin> = city-name
     <destination> = city-name
-    city-name = #'[A-z][a-z]+'
+    city-name = #'[a-zA-Z]+'
     distance = #'[0-9]+'"))
 
 (defn transform-distance [magnitude]
@@ -25,3 +26,44 @@
                          :route vector
                          :city-name symbol
                          :distance transform-distance})))
+
+(defn path-length [g path]
+  (->> path
+       (partition 2 1)
+       (map vec)
+       (map (partial graph/weight g))
+       (apply +)))
+
+(defn all-tours [g]
+  (combo/permutations
+   (graph/nodes g)))
+
+(defn path-upper-bound [g]
+  (->> g
+       graph/edges
+       (map (partial graph/weight g))
+       (apply +)))
+
+(defn- reduce-tour-length [f bound g]
+  (->> g
+       all-tours
+       (map (partial path-length g))
+       (reduce f bound)))
+
+(defn shortest-tour-length [g]
+  (reduce-tour-length min (path-upper-bound g) g))
+
+(defn longest-tour-length [g]
+  (reduce-tour-length max 0 g))
+
+(defn day-9 [file-name]
+  (-> file-name
+      slurp-resource
+      parse-map
+      shortest-tour-length))
+
+(defn day-9-2 [file-name]
+  (-> file-name
+      slurp-resource
+      parse-map
+      longest-tour-length))
