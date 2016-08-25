@@ -79,7 +79,7 @@
 
 (defmacro defbinary-circuit-op [op-name fn-op]
   `(defmethod propagate-input ~(keyword op-name)
-     [circuit# [_ left# right#]]
+     [circuit# [~'_ left# right#]]
      (~fn-op
       (lookup-wire-or-value circuit# left#)
       (lookup-wire-or-value circuit# right#))))
