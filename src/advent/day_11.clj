@@ -9,7 +9,9 @@
   (char
    (+ i (int \a))))
 
-(def iol? #{8 14 11})
+(def iol?
+  (set
+   (map c->i "iol")))
 
 (defn str->ints [s]
   (->> (seq s)
@@ -98,7 +100,7 @@
    (let [next (next-passnumber passnumber)]
      (if (valid-password? next)
        (cons next (valid-passnumber-seq next))
-       (valid-passnumber-seq (next-passnumber next))))))
+       (valid-passnumber-seq next)))))
 
 (defn next-valid-password [password]
   (-> password

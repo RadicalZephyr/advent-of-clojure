@@ -106,8 +106,18 @@
     (t/is (= (s "abnba")
              (sut/next-passnumber (s "abnaz"))))))
 
-#_(t/deftest next-valid-password-test
+(t/deftest next-valid-password-test
+  (t/is (= "abcdeeaa"
+           (sut/next-valid-password "abcdeaaa")))
+  (t/is (= "abcdffaa"
+           (sut/next-valid-password "abcdfezz")))
+  (t/is (= "abcdffaa"
+           (sut/next-valid-password "abcdezzz")))
+  (t/is (= "abcdffaa"
+           (sut/next-valid-password "abcdefaa")))
   (t/is (= "abcdffaa"
            (sut/next-valid-password "abcdefgh")))
+  (t/is (= "ghjaabcc"
+           (sut/next-valid-password "ghjaabcb")))
   (t/is (= "ghjaabcc"
            (sut/next-valid-password "ghijklmn"))))
