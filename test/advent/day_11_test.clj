@@ -4,33 +4,33 @@
 
 (t/deftest has-pairs?-test
   (t/is (= true
-           (sut/has-pairs? "aabb")))
+           (sut/has-pairs? (sut/intstr "aabb"))))
   (t/is (= true
-           (sut/has-pairs? "aabbb")))
+           (sut/has-pairs? (sut/intstr "aabbb"))))
   (t/is (= true
-           (sut/has-pairs? "aacdebbb")))
+           (sut/has-pairs? (sut/intstr "aacdebbb"))))
 
   (t/is (= false
-           (sut/has-pairs? "acbb")))
+           (sut/has-pairs? (sut/intstr "acbb"))))
   (t/is (= false
-           (sut/has-pairs? "bbb")))
+           (sut/has-pairs? (sut/intstr "bbb"))))
   (t/is (= false
-           (sut/has-pairs? "abcbcb"))))
+           (sut/has-pairs? (sut/intstr "abcbcb")))))
 
 (t/deftest has-straight?-test
   (t/is (= true
-           (sut/has-straight? "abc")))
+           (sut/has-straight? (sut/intstr "abc"))))
   (t/is (= true
-           (sut/has-straight? "def")))
+           (sut/has-straight? (sut/intstr "def"))))
   (t/is (= true
-           (sut/has-straight? "xyz")))
+           (sut/has-straight? (sut/intstr "xyz"))))
 
   (t/is (= false
-           (sut/has-straight? "abd")))
+           (sut/has-straight? (sut/intstr "abd"))))
   (t/is (= false
-           (sut/has-straight? "abe")))
+           (sut/has-straight? (sut/intstr "abe"))))
   (t/is (= false
-           (sut/has-straight? "bbc"))))
+           (sut/has-straight? (sut/intstr "bbc")))))
 
 (t/deftest valid-password?-test
   (t/is (= true

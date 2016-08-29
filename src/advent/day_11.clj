@@ -19,7 +19,7 @@
        (map c->i)))
 
 (defn no-iol? [password]
-  (not (some iol? (intstr password))))
+  (not (some iol? password)))
 
 (defn- is-straight? [triple]
   (= [0 1 2]
@@ -27,17 +27,9 @@
 
 (defn has-straight? [password]
   (->> password
-       intstr
        (partition 3 1)
        (some is-straight?)
        boolean))
-
-(def parse-pairs
-  (insta/parser
-   "password = letters* pair letters* pair letters*
-    pair = 'aa' | 'bb' | 'cc' | 'dd' | 'ee' | 'ff' | 'gg' | 'hh' | 'ii' | 'jj' | 'kk' | 'll' | 'mm' | 'nn' | 'oo' | 'pp' | 'qq' | 'rr' | 'ss' | 'tt' | 'uu' | 'vv' | 'ww' | 'xx' | 'yy' | 'zz'
-    letters = #'[a-z]'"))
-
 
 (defn pair-seq [passnumber]
   (lazy-seq
@@ -49,16 +41,16 @@
 
 (defn has-pairs? [password]
   (->> password
-       intstr
        pair-seq
        count
        (<= 2)))
 
 (defn valid-password? [password]
-  (and
-   (no-iol? password)
-   (has-straight? password)
-   (has-pairs? password)))
+  (let [passnumber (intstr password)]
+    (and
+     (no-iol? passnumber)
+     (has-straight? passnumber)
+     (has-pairs? passnumber))))
 
 (defn skip-iol [i]
   (if (iol? i) (inc i) i))
