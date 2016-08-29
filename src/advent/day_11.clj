@@ -1,9 +1,6 @@
 (ns advent.day-11
   (:require [instaparse.core :as insta]))
 
-(defn stringify [coll]
-  (apply str coll))
-
 (defn c->i [c]
   (- (int c)
      (int \a)))
@@ -14,9 +11,14 @@
 
 (def iol? #{8 14 11})
 
-(defn intstr [s]
+(defn str->ints [s]
   (->> (seq s)
        (map c->i)))
+
+(defn ints->str [is]
+  (->> is
+       (map i->c)
+       (apply str)))
 
 (defn no-iol? [password]
   (not (some iol? password)))
@@ -46,7 +48,7 @@
        (<= 2)))
 
 (defn valid-password? [password]
-  (let [passnumber (intstr password)]
+  (let [passnumber password]
     (and
      (no-iol? passnumber)
      (has-straight? passnumber)
@@ -57,21 +59,20 @@
 
 (defn inc-char [c]
   (-> c
-      c->i
       inc
       skip-iol
-      (mod 26)
-      i->c))
+      (mod 26)))
 
 (defn inc-carry-char [c]
   (let [i-next (inc-char c)]
-      [(= i-next \a) i-next]))
+    [(= i-next
+        (c->i \a))
+     i-next]))
 
 (defn roll-letter [{:keys [roll? cs] :as acc} c]
   (if roll?
-    {:roll? true :cs (conj cs \z)}
-    (let [iol? (iol? (c->i c))]
-      {:roll? iol? :cs (conj cs c)})))
+    {:roll? true :cs (conj cs (c->i \z))}
+    {:roll? (iol? c) :cs (conj cs c)}))
 
 (defn pre-roll-iol [letters]
   (:cs (reduce roll-letter {:roll? false :cs []} letters)))
@@ -85,25 +86,26 @@
 (defn increment-letters [letters]
   (:cs (reduce inc-letter {:inc? true :cs []} letters)))
 
-(defn next-password [password]
-  (-> password
-      pre-roll-iol
-      reverse
-      increment-letters
-      reverse
-      stringify))
+(defn next-passnumber [passnumber]
+  (->> passnumber
+       pre-roll-iol
+       reverse
+       increment-letters
+       reverse))
 
-#_(defn next-valid-password [current-password]
-  )
-
-#_(defn valid-password-seq [password]
+(defn valid-passnumber-seq [passnumber]
   (lazy-seq
-   (let [next (next-password password)]
+   (let [next (next-passnumber passnumber)]
      (if (valid-password? next)
-       (cons next (valid-password-seq next))
-       (valid-password-seq (next-password next))))))
+       (cons next (valid-passnumber-seq next))
+       (valid-passnumber-seq (next-passnumber next))))))
 
+(defn next-valid-password [password]
+  (-> password
+      str->ints
+      valid-passnumber-seq
+      first
+      ints->str))
 
-
-#_(defn day-11 [current-password]
+(defn day-11 [current-password]
   (next-valid-password current-password))

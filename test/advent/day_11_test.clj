@@ -2,129 +2,111 @@
   (:require [advent.day-11 :as sut]
             [clojure.test :as t]))
 
+(def s sut/str->ints)
+
 (t/deftest has-pairs?-test
   (t/is (= true
-           (sut/has-pairs? (sut/intstr "aabb"))))
+           (sut/has-pairs? (s "aabb"))))
   (t/is (= true
-           (sut/has-pairs? (sut/intstr "aabbb"))))
+           (sut/has-pairs? (s "aabbb"))))
   (t/is (= true
-           (sut/has-pairs? (sut/intstr "aacdebbb"))))
+           (sut/has-pairs? (s "aacdebbb"))))
 
   (t/is (= false
-           (sut/has-pairs? (sut/intstr "acbb"))))
+           (sut/has-pairs? (s "acbb"))))
   (t/is (= false
-           (sut/has-pairs? (sut/intstr "bbb"))))
+           (sut/has-pairs? (s "bbb"))))
   (t/is (= false
-           (sut/has-pairs? (sut/intstr "abcbcb")))))
+           (sut/has-pairs? (s "abcbcb")))))
 
 (t/deftest has-straight?-test
   (t/is (= true
-           (sut/has-straight? (sut/intstr "abc"))))
+           (sut/has-straight? (s "abc"))))
   (t/is (= true
-           (sut/has-straight? (sut/intstr "def"))))
+           (sut/has-straight? (s "def"))))
   (t/is (= true
-           (sut/has-straight? (sut/intstr "xyz"))))
+           (sut/has-straight? (s "xyz"))))
 
   (t/is (= false
-           (sut/has-straight? (sut/intstr "abd"))))
+           (sut/has-straight? (s "abd"))))
   (t/is (= false
-           (sut/has-straight? (sut/intstr "abe"))))
+           (sut/has-straight? (s "abe"))))
   (t/is (= false
-           (sut/has-straight? (sut/intstr "bbc")))))
+           (sut/has-straight? (s "bbc")))))
 
 (t/deftest valid-password?-test
   (t/is (= true
-           (sut/valid-password? "abcddee")))
+           (sut/valid-password? (s "abcddee"))))
+  (t/is (= true
+           (sut/valid-password? (s "abcdffaa"))))
+  (t/is (= true
+           (sut/valid-password? (s "ghjaabcc"))))
 
   (t/is (= false
-           (sut/valid-password? "abcddei")))
+           (sut/valid-password? (s "abcddei"))))
   (t/is (= false
-           (sut/valid-password? "abcddeo")))
+           (sut/valid-password? (s "abcddeo"))))
   (t/is (= false
-           (sut/valid-password? "abcddel")))
+           (sut/valid-password? (s "abcddel"))))
 
   (t/is (= false
-           (sut/valid-password? "abbceffg")))
+           (sut/valid-password? (s "abbceffg"))))
   (t/is (= false
-           (sut/valid-password? "abcdeffg"))))
-
-(t/deftest inc-letter-test
-  (t/testing "basic letter incrementing and wrapping"
-    (t/is (= {:inc? false :cs [\b]}
-             (sut/inc-letter {:inc? true :cs []} \a)))
-    (t/is (= {:inc? true :cs [\a]}
-             (sut/inc-letter {:inc? true :cs []} \z))))
-
-  (t/testing "skips iol completely"
-    (t/is (= {:inc? false :cs [\j]}
-             (sut/inc-letter {:inc? true :cs []} \h)))
-    (t/is (= {:inc? false :cs [\m]}
-             (sut/inc-letter {:inc? true :cs []} \k)))
-    (t/is (= {:inc? false :cs [\p]}
-             (sut/inc-letter {:inc? true :cs []} \n))))
-
-  (t/testing "inc? flag behavior and carrying"
-    (t/is (= {:inc? false :cs [\a \a]}
-             (sut/inc-letter {:inc? false :cs [\a]} \a)))
-    (t/is (= {:inc? false :cs [\a \b]}
-             (sut/inc-letter {:inc? true :cs [\a]} \a)))
-
-    (t/is (= {:inc? true :cs [\a \a]}
-             (sut/inc-letter {:inc? true :cs [\a]} \z)))))
+           (sut/valid-password? (s "abcdeffg")))))
 
 (t/deftest pre-roll-iol-test
-  (t/is (= (seq "iz")
-           (sut/pre-roll-iol (seq "ig"))))
-  (t/is (= (seq "iz")
-           (sut/pre-roll-iol (seq "iz"))))
-  (t/is (= (seq "oz")
-           (sut/pre-roll-iol (seq "oa"))))
-  (t/is (= (seq "lz")
-           (sut/pre-roll-iol (seq "ll"))))
-  (t/is (= (seq "zxizzzzzz")
-           (sut/pre-roll-iol (seq "zxiabcdef")))))
+  (t/is (= (s "iz")
+           (sut/pre-roll-iol (s "ig"))))
+  (t/is (= (s "iz")
+           (sut/pre-roll-iol (s "iz"))))
+  (t/is (= (s "oz")
+           (sut/pre-roll-iol (s "oa"))))
+  (t/is (= (s "lz")
+           (sut/pre-roll-iol (s "ll"))))
+  (t/is (= (s "zxizzzzzz")
+           (sut/pre-roll-iol (s "zxiabcdef")))))
 
-(t/deftest next-password-test
+(t/deftest next-passnumber-test
   (t/testing "basic password incrementing"
-    (t/is (= "b"
-             (sut/next-password "a")))
-    (t/is (= "c"
-             (sut/next-password "b")))
-    (t/is (= "ab"
-             (sut/next-password "aa")))
-    (t/is (= "ba"
-             (sut/next-password "az")))
-    (t/is (= "baa"
-             (sut/next-password "azz"))))
+    (t/is (= (s "b")
+             (sut/next-passnumber (s "a"))))
+    (t/is (= (s "c")
+             (sut/next-passnumber (s "b"))))
+    (t/is (= (s "ab")
+             (sut/next-passnumber (s "aa"))))
+    (t/is (= (s "ba")
+             (sut/next-passnumber (s "az"))))
+    (t/is (= (s "baa")
+             (sut/next-passnumber (s "azz")))))
 
   (t/testing "skips iol"
-    (t/is (= "j"
-             (sut/next-password "h")))
-    (t/is (= "m"
-             (sut/next-password "k")))
-    (t/is (= "p"
-             (sut/next-password "n"))))
+    (t/is (= (s "j")
+             (sut/next-passnumber (s "h"))))
+    (t/is (= (s "m")
+             (sut/next-passnumber (s "k"))))
+    (t/is (= (s "p")
+             (sut/next-passnumber (s "n")))))
 
   (t/testing "skips iol intelligently"
-    (t/is (= "ja"
-             (sut/next-password "iz")))
-    (t/is (= "ja"
-             (sut/next-password "ig")))
-    (t/is (= "m"
-             (sut/next-password "k")))
-    (t/is (= "p"
-             (sut/next-password "n")))
+    (t/is (= (s "ja")
+             (sut/next-passnumber (s "iz"))))
+    (t/is (= (s "ja")
+             (sut/next-passnumber (s "ig"))))
+    (t/is (= (s "m")
+             (sut/next-passnumber (s "k"))))
+    (t/is (= (s "p")
+             (sut/next-passnumber (s "n"))))
 
-    (t/is (= "abpaa"
-             (sut/next-password "aboaa")))
-    (t/is (= "abpaa"
-             (sut/next-password "abnzz")))
-    (t/is (= "abnas"
-             (sut/next-password "abnar")))
-    (t/is (= "abnba"
-             (sut/next-password "abnaz")))))
+    (t/is (= (s "abpaa")
+             (sut/next-passnumber (s "aboaa"))))
+    (t/is (= (s "abpaa")
+             (sut/next-passnumber (s "abnzz"))))
+    (t/is (= (s "abnas")
+             (sut/next-passnumber (s "abnar"))))
+    (t/is (= (s "abnba")
+             (sut/next-passnumber (s "abnaz"))))))
 
-(t/deftest next-valid-password-test
+#_(t/deftest next-valid-password-test
   (t/is (= "abcdffaa"
            (sut/next-valid-password "abcdefgh")))
   (t/is (= "ghjaabcc"
