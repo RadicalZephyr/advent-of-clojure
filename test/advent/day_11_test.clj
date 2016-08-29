@@ -17,6 +17,21 @@
   (t/is (= false
            (sut/has-pairs? "abcbcb"))))
 
+(t/deftest has-straight?-test
+  (t/is (= true
+           (sut/has-straight? "abc")))
+  (t/is (= true
+           (sut/has-straight? "def")))
+  (t/is (= true
+           (sut/has-straight? "xyz")))
+
+  (t/is (= false
+           (sut/has-straight? "abd")))
+  (t/is (= false
+           (sut/has-straight? "abe")))
+  (t/is (= false
+           (sut/has-straight? "bbc"))))
+
 (t/deftest valid-password?-test
   (t/is (= true
            (sut/valid-password? "abcddee")))

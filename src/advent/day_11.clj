@@ -1,6 +1,24 @@
 (ns advent.day-11
   (:require [instaparse.core :as insta]))
 
+(defn stringify [coll]
+  (apply str coll))
+
+(defn c->i [c]
+  (- (int c)
+     (int \a)))
+
+(defn i->c [i]
+  (char
+   (+ i (int \a))))
+
+(defn iol? [i]
+  (contains? #{8 14 11} i))
+
+(defn intstr [s]
+  (->> (seq s)
+       (map c->i)))
+
 (def parse-straight
   (insta/parser
    "password = letters* straight letters*
@@ -11,10 +29,16 @@
 (defn no-iol? [password]
   (not (re-find #"[iol]" password)))
 
+(defn- is-straight? [triple]
+  (= [0 1 2]
+     (map #(- % (first triple)) triple)))
+
 (defn has-straight? [password]
-  (not
-   (insta/failure?
-    (parse-straight password))))
+  (->> (seq password)
+       (map c->i)
+       (partition 3 1)
+       (some is-straight?)
+       boolean))
 
 (def parse-pairs
   (insta/parser
@@ -32,20 +56,6 @@
    (no-iol? password)
    (has-straight? password)
    (has-pairs? password)))
-
-(defn stringify [coll]
-  (apply str coll))
-
-(defn c->i [c]
-  (- (int c)
-     (int \a)))
-
-(defn i->c [i]
-  (char
-   (+ i (int \a))))
-
-(defn iol? [i]
-  (contains? #{8 14 11} i))
 
 (defn skip-iol [i]
   (if (iol? i) (inc i) i))
@@ -88,15 +98,17 @@
       reverse
       stringify))
 
-(defn valid-password-seq [password]
+#_(defn next-valid-password [current-password]
+  )
+
+#_(defn valid-password-seq [password]
   (lazy-seq
    (let [next (next-password password)]
      (if (valid-password? next)
        (cons next (valid-password-seq next))
        (valid-password-seq (next-password next))))))
 
-(defn next-valid-password [current-password]
-  (first (valid-password-seq current-password)))
 
-(defn day-11 [current-password]
+
+#_(defn day-11 [current-password]
   (next-valid-password current-password))
