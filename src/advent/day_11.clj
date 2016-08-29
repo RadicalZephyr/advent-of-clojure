@@ -38,10 +38,21 @@
     pair = 'aa' | 'bb' | 'cc' | 'dd' | 'ee' | 'ff' | 'gg' | 'hh' | 'ii' | 'jj' | 'kk' | 'll' | 'mm' | 'nn' | 'oo' | 'pp' | 'qq' | 'rr' | 'ss' | 'tt' | 'uu' | 'vv' | 'ww' | 'xx' | 'yy' | 'zz'
     letters = #'[a-z]'"))
 
+
+(defn pair-seq [passnumber]
+  (lazy-seq
+   (let [[one two & tail] passnumber]
+     (when (and one two)
+       (if (= one two)
+         (cons one (pair-seq tail))
+         (pair-seq (rest passnumber)))))))
+
 (defn has-pairs? [password]
-  (not
-   (insta/failure?
-    (parse-pairs password))))
+  (->> password
+       intstr
+       pair-seq
+       count
+       (<= 2)))
 
 (defn valid-password? [password]
   (and
