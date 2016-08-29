@@ -12,30 +12,22 @@
   (char
    (+ i (int \a))))
 
-(defn iol? [i]
-  (contains? #{8 14 11} i))
+(def iol? #{8 14 11})
 
 (defn intstr [s]
   (->> (seq s)
        (map c->i)))
 
-(def parse-straight
-  (insta/parser
-   "password = letters* straight letters*
-    straight = 'abc' | 'bcd' | 'cde' | 'def' | 'efg' | 'fgh' | 'ghi' | 'hij' | 'ijk' | 'jkl' | 'klm' | 'lmn' | 'mno' | 'nop' | 'opq' | 'pqr' | 'qrs' | 'rst' | 'stu' | 'tuv' | 'uvw' | 'vwx' | 'wxy' | 'xyz'
-    letters = #'[a-z]'"))
-
-
 (defn no-iol? [password]
-  (not (re-find #"[iol]" password)))
+  (not (some iol? (intstr password))))
 
 (defn- is-straight? [triple]
   (= [0 1 2]
      (map #(- % (first triple)) triple)))
 
 (defn has-straight? [password]
-  (->> (seq password)
-       (map c->i)
+  (->> password
+       intstr
        (partition 3 1)
        (some is-straight?)
        boolean))
