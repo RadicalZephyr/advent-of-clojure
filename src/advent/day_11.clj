@@ -33,6 +33,9 @@
    (has-straight? password)
    (has-pairs? password)))
 
+(defn stringify [coll]
+  (apply str coll))
+
 (defn c->i [c]
   (- (int c)
      (int \a)))
@@ -48,25 +51,42 @@
   (if (iol? i) (inc i) i))
 
 (defn inc-char [c]
-  (let [i-next (inc (c->i c))
-        carry? (>= i-next 26)
-        i-mod (mod i-next 26)
-        i-skipped (skip-iol i-mod)]
-    [carry? (i->c i-skipped)]))
+  (-> c
+      c->i
+      inc
+      skip-iol
+      (mod 26)
+      i->c))
 
-(defn do-letter [{:keys [inc? cs] :as acc} c]
+(defn inc-carry-char [c]
+  (let [i-next (inc-char c)]
+      [(= i-next \a) i-next]))
+
+(defn roll-letter [{:keys [roll? cs] :as acc} c]
+  (if roll?
+    {:roll? true :cs (conj cs \z)}
+    (let [iol? (iol? (c->i c))]
+      {:roll? iol? :cs (conj cs c)})))
+
+(defn pre-roll-iol [letters]
+  (:cs (reduce roll-letter {:roll? false :cs []} letters)))
+
+(defn inc-letter [{:keys [inc? cs] :as acc} c]
   (if inc?
-    (let [[carry? cnext] (inc-char c)]
+    (let [[carry? cnext] (inc-carry-char c)]
       {:inc? carry? :cs (conj cs cnext)})
     {:inc? false :cs (conj cs c)}))
 
+(defn increment-letters [letters]
+  (:cs (reduce inc-letter {:inc? true :cs []} letters)))
+
 (defn next-password [password]
-  (->> password
-       reverse
-       (reduce do-letter {:inc? true :cs []})
-       :cs
-       reverse
-       (apply str)))
+  (-> password
+      pre-roll-iol
+      reverse
+      increment-letters
+      reverse
+      stringify))
 
 (defn valid-password-seq [password]
   (lazy-seq
