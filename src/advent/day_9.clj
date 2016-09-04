@@ -44,17 +44,17 @@
        (map (partial graph/weight g))
        (apply +)))
 
-(defn- reduce-tour-length [f bound g]
-  (->> g
-       all-tours
-       (map (partial path-length g))
-       (reduce f bound)))
+(defn shortest-tour [g]
+  (apply min-key (partial path-length g) (all-tours g)))
 
 (defn shortest-tour-length [g]
-  (reduce-tour-length min (path-upper-bound g) g))
+  (path-length g (shortest-tour g)))
+
+(defn longest-tour [g]
+  (apply max-key (partial path-length g) (all-tours g)))
 
 (defn longest-tour-length [g]
-  (reduce-tour-length max 0 g))
+  (path-length g (longest-tour g)))
 
 (defn day-9 [file-name]
   (-> file-name
