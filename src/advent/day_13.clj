@@ -43,13 +43,51 @@
        (map (partial new-entry dg))
        (apply loom/weighted-graph)))
 
-(defn maximize-happiness [guest-list]
+(defn make-circuit [coll]
+  (concat coll [(first coll)]))
+
+(defn all-circuits [g]
+  (map make-circuit (tours/all-tours g)))
+
+(defn shortest-circuit [g]
+  (apply min-key (partial tours/path-length g) (all-circuits g)))
+
+(defn shortest-circuit-length [g]
+  (tours/path-length g (shortest-circuit g)))
+
+(defn longest-circuit [g]
+  (apply max-key (partial tours/path-length g) (all-circuits g)))
+
+(defn longest-circuit-length [g]
+  (tours/path-length g (longest-circuit g)))
+
+(defn graphize-guest-list [guest-list]
   (->> guest-list
        parse-guests
-       collapse-digraph
-       tours/longest-tour-length))
+       collapse-digraph))
+
+(defn maximize-happiness [guest-list]
+  (->> guest-list
+       graphize-guest-list
+       longest-circuit-length))
 
 (defn day-13 [file-name]
   (-> file-name
       slurp-resource
       maximize-happiness))
+
+(defn insert-myself [g]
+  (apply loom/add-edges g
+         (for [n (loom/nodes g)]
+           ['Me n 0])))
+
+(defn maximize-happiness-with-me [guest-list]
+  (->> guest-list
+       graphize-guest-list
+       insert-myself
+       longest-circuit-length))
+
+(defn day-13-2 [file-name]
+  (-> file-name
+      slurp-resource
+      maximize-happiness-with-me))
