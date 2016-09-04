@@ -1,5 +1,6 @@
 (ns advent.day-12
   (:require [instaparse.core :as insta]
+            [cheshire.core :as json]
             [advent.core :refer [slurp-resource]]))
 
 (def raw-parse-ints
@@ -19,3 +20,20 @@
   (->> file
        slurp-resource
        sum-numbers))
+
+(defn has-red? [m]
+  (some #{"red"} (vals m)))
+
+(defn int-seq [data]
+  (lazy-seq
+   (cond
+     (map? data) (if (has-red? data) [] (int-seq (vals data)))
+     (sequential? data) (mapcat int-seq data)
+     (integer? data) [data])))
+
+(defn day-12-2 [file]
+  (->> file
+       slurp-resource
+       json/parse-string
+       int-seq
+       (apply +)))

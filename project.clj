@@ -7,4 +7,5 @@
                  [org.clojure/math.numeric-tower "0.0.4"]
                  [org.clojure/math.combinatorics "0.1.3"]
                  [instaparse "1.4.1"]
-                 [aysylu/loom "0.5.4"]])
+                 [aysylu/loom "0.5.4"]
+                 [cheshire "5.6.3"]])

@@ -38,8 +38,29 @@
   (t/is (= 0
          (sut/sum-numbers "[]")))
   (t/is (= 0
-         (sut/sum-numbers "{}")))
+         (sut/sum-numbers "{}"))))
 
-
-
-  )
+(t/deftest int-seq-test
+  (t/is (= [1]
+           (sut/int-seq [1])))
+  (t/is (= [2]
+           (sut/int-seq [2 "blue"])))
+  (t/is (= [1]
+           (sut/int-seq {"a" 1})))
+  (t/is (= [1]
+           (sut/int-seq {"a" [1]})))
+  (t/is (= [2 1]
+           (sut/int-seq {"a" [{"b" 2} 1]})))
+  (t/is (= []
+           (sut/int-seq {"a" [{"b" 2} 1]
+                         "b" "red"})))
+  (t/is (= [1 2]
+           (sut/int-seq [1 {"a" 3 "how" "red"} 2])))
+  (t/is (= [1 2 3]
+           (sut/int-seq [1 2 3])))
+  (t/is (= [1 3]
+           (sut/int-seq [1 {"c" "red" "b" 2} 3])))
+  (t/is (= []
+           (sut/int-seq {"d" "red" "e" [1 2 3 4] "f" 5})))
+  (t/is (= [1 5]
+           (sut/int-seq [1 "red" 5]))))
