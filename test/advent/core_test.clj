@@ -2,26 +2,6 @@
   (:require [advent.core :refer :all]
             [clojure.test :refer :all]))
 
-(deftest next-step-test
-  (is (= [0 1]
-         (next-step [0 0] \^)))
-  (is (= [1 0]
-         (next-step [0 0] \>)))
-  (is (= [-1 0]
-         (next-step [0 0] \<)))
-  (is (= [0 -1]
-         (next-step [0 0] \v))))
-
-(deftest accumulate-path-test
-  (is (= [[0 1] [0 0]]
-         (accumulate-path '([0 0]) \^)))
-  (is (= [[1 -1] [1 0]]
-         (accumulate-path '([1 0]) \v))))
-
-(deftest path-test
-  (is (= [[0 0] [1 0] [1 1] [0 1] [0 0]]
-         (path (seq "^>v<")))))
-
 (deftest count-vowels-test
   (is (= 0 (count-vowels "bkt")))
   (is (= 1 (count-vowels "a")))
