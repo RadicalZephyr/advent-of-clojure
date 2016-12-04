@@ -2,18 +2,6 @@
   (:require [advent.core :refer :all]
             [clojure.test :refer :all]))
 
-(deftest box-area+-test
-  (is (= 43
-         (box-area+ [1 1 10])))
-  (is (= 58
-         (box-area+ [2 3 4]))))
-
-(deftest ribbon-length+-test
-  (is (= 34
-         (ribbon-length+ [2 3 4])))
-  (is (= 14
-         (ribbon-length+ [1 1 10]))))
-
 (deftest next-step-test
   (is (= [0 1]
          (next-step [0 0] \^)))
