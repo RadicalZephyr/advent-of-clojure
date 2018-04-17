@@ -42,3 +42,15 @@
 
 (defn day-17 []
   (count-the-ways sizes 150))
+
+(defn count-the-ways2 [sizes total]
+  (let [groups (->> (range 1 (inc (count (keys sizes))))
+                    (mapcat #(combinations sizes %))
+                    (map (juxt count #(apply + %)))
+                    (filter #(= total (second %)))
+                    (group-by first))
+        min-count (apply min (keys groups))]
+    (count (get groups min-count))))
+
+(defn day-17-2 []
+  (count-the-ways2 sizes 150))

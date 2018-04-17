@@ -13,3 +13,13 @@
            (sut/count-the-ways [4 4 3 2 1 1] 5)))
   (t/is (= 4
            (sut/count-the-ways [20 15  10 5 5] 25))))
+
+(t/deftest count-the-ways2-test
+  (t/is (= 1
+           (sut/count-the-ways2 [5] 5)))
+  (t/is (= 2
+           (sut/count-the-ways2 [4 3 2 1] 5)))
+  (t/is (= 3
+           (sut/count-the-ways2 [4 3 2 1 1] 5)))
+  (t/is (= 3
+           (sut/count-the-ways2 [20 15  10 5 5] 25))))
