@@ -36,8 +36,9 @@
           cookie))
 
 (defn total-score [cookie]
-  (->> cookie
-       collate-attrs
+  (->> (-> cookie
+           collate-attrs
+           (dissoc :calories))
        vals
-       (map #(apply + %))
+       (map #(max 0 (apply + %)))
        (apply *)))

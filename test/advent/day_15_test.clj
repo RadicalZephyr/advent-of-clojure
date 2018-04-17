@@ -36,4 +36,12 @@
 (t/deftest total-score-test
   (t/is (= (* (+ 6 8) (+ -4 72))
            (sut/total-score {4 {:capacity 2 :flavor -1}
-                             6 {:capacity 1 :flavor 12}}))))
+                             6 {:capacity 1 :flavor 12}})))
+
+  (t/is (= 0
+           (sut/total-score {1 {:capacity -1 :flavor 1}
+                             3 {:capacity -1 :flavor 2}})))
+
+  (t/is (= 7
+           (sut/total-score {1 {:calories -1 :flavor 1}
+                             3 {:calories -1 :flavor 2}}))))
