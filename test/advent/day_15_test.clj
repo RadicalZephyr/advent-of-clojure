@@ -26,3 +26,9 @@
            (sut/parse-ingredients
             (str "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8\n"
                  "Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3\n")))))
+
+(t/deftest collate-attrs-test
+  (t/is (= {:capacity [8 6]
+            :flavor [-4 72]}
+           (sut/collate-attrs {4 {:capacity 2 :flavor -1}
+                               6 {:capacity 1 :flavor 12}}))))

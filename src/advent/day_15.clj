@@ -23,3 +23,14 @@
                          :attr vector
                          :attr-name keyword
                          :attr-value #(Integer/parseInt %)})))
+
+(defn- multiply-cookie [cookie [amount attrs]]
+  (reduce (fn [cookie [k v]]
+            (update cookie k (fnil conj []) (* amount v)))
+          cookie
+          attrs))
+
+(defn collate-attrs [cookie]
+  (reduce multiply-cookie
+          {}
+          cookie))
