@@ -32,3 +32,8 @@
             :flavor [-4 72]}
            (sut/collate-attrs {4 {:capacity 2 :flavor -1}
                                6 {:capacity 1 :flavor 12}}))))
+
+(t/deftest total-score-test
+  (t/is (= (* (+ 6 8) (+ -4 72))
+           (sut/total-score {4 {:capacity 2 :flavor -1}
+                             6 {:capacity 1 :flavor 12}}))))

@@ -34,3 +34,10 @@
   (reduce multiply-cookie
           {}
           cookie))
+
+(defn total-score [cookie]
+  (->> cookie
+       collate-attrs
+       vals
+       (map #(apply + %))
+       (apply *)))
