@@ -24,9 +24,9 @@
                          :attr-name keyword
                          :attr-value #(Integer/parseInt %)})))
 
-(defn- multiply-cookie [cookie [amount attrs]]
+(defn- multiply-cookie [cookie attrs]
   (reduce (fn [cookie [k v]]
-            (update cookie k (fnil conj []) (* amount v)))
+            (update cookie k (fnil conj []) v))
           cookie
           attrs))
 
@@ -35,10 +35,11 @@
           {}
           cookie))
 
-(defn total-score [cookie]
-  (->> (-> cookie
+(defn total-score [ingredients cookie-proportions]
+  (->> (-> ingredients
            collate-attrs
            (dissoc :calories))
        vals
+       (map #(map * cookie-proportions %))
        (map #(max 0 (apply + %)))
        (apply *)))

@@ -28,20 +28,23 @@
                  "Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3\n")))))
 
 (t/deftest collate-attrs-test
-  (t/is (= {:capacity [8 6]
-            :flavor [-4 72]}
-           (sut/collate-attrs {4 {:capacity 2 :flavor -1}
-                               6 {:capacity 1 :flavor 12}}))))
+  (t/is (= {:capacity [2 1]
+            :flavor [-1 12]}
+           (sut/collate-attrs [{:capacity 2 :flavor -1}
+                               {:capacity 1 :flavor 12}]))))
 
 (t/deftest total-score-test
-  (t/is (= (* (+ 6 8) (+ -4 72))
-           (sut/total-score {4 {:capacity 2 :flavor -1}
-                             6 {:capacity 1 :flavor 12}})))
+  (t/is (= (* (+ 8 6) (+ -4 72))
+           (sut/total-score [{:capacity 2 :flavor -1}
+                             {:capacity 1 :flavor 12}]
+                            [4 6])))
 
   (t/is (= 0
-           (sut/total-score {1 {:capacity -1 :flavor 1}
-                             3 {:capacity -1 :flavor 2}})))
+           (sut/total-score [{:capacity -1 :flavor 1}
+                             {:capacity -1 :flavor 2}]
+                            [1 1])))
 
   (t/is (= 7
-           (sut/total-score {1 {:calories -1 :flavor 1}
-                             3 {:calories -1 :flavor 2}}))))
+           (sut/total-score [{:calories -1 :flavor 1}
+                             {:calories -1 :flavor 2}]
+                            [1 3]))))
