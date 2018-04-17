@@ -48,3 +48,22 @@
            (sut/total-score [{:calories -1 :flavor 1}
                              {:calories -1 :flavor 2}]
                             [1 3]))))
+
+(t/deftest all-ingredient-proportions-test
+  (t/is (= [[1 1]]
+           (sut/all-ingredient-proportions 2 2)))
+  (t/is (= [[1 2] [2 1]]
+           (sut/all-ingredient-proportions 2 3)))
+  (t/is (= [[1 1 2] [1 2 1] [2 1 1]]
+           (sut/all-ingredient-proportions 3 4)))
+  (t/is (= [[1 1 1 1]]
+           (sut/all-ingredient-proportions 4 4)))
+  (t/is (= [[1 3] [2 2] [3 1]]
+           (sut/all-ingredient-proportions 2 4)))
+  (t/is (= [[1 1 2] [1 2 1] [2 1 1]]
+           (sut/all-ingredient-proportions 3 4)))
+  (t/is (= [[1 1 3] [1 2 2] [1 3 1] [2 1 2] [2 2 1] [3 1 1]]
+           (sut/all-ingredient-proportions 3 5)))
+  (t/is (= [[1 9] [2 8] [3 7] [4 6] [5 5]
+            [6 4] [7 3] [8 2] [9 1]]
+           (sut/all-ingredient-proportions 2 10))))

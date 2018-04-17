@@ -43,3 +43,13 @@
        (map #(map * cookie-proportions %))
        (map #(max 0 (apply + %)))
        (apply *)))
+
+(defmacro all-ingredient-proportions [count total]
+  (if (= count total)
+    [(vec (repeat count 1))]
+    (let [syms (repeatedly (dec count) #(gensym "x"))]
+      `(for [~@(mapcat (fn [sym] `[~sym (range 1 ~(- total count -2))]) syms)
+             :let [y# (- ~total ~@syms)]
+             :when (and (= ~total (+ ~@syms y#))
+                        (> y# 0))]
+         [~@syms y#]))))
