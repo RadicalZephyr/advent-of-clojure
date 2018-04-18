@@ -1,13 +1,13 @@
 (ns advent.day-20)
 
-(defn factors [x]
+(defn factorsum [x]
   (->> (range 2 (inc (quot x 2)))
        (keep #(when (= 0 (mod x %)) %))
-       (apply conj #{1} x)))
+       (apply + 1 x)))
 
 (defn presents-seq []
   (->> (range)
-       (map (comp #(apply + %) factors inc))))
+       (map (comp factorsum inc))))
 
 (defn day-20 [puzzle-num]
   (let [puzzle-name (/ puzzle-num 10)]

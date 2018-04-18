@@ -3,14 +3,11 @@
             [clojure.test :as t]))
 
 (t/deftest factors-test
-  (t/is (= #{1}
-           (sut/factors 1)))
+  (t/is (= 3
+           (sut/factorsum 2)))
 
-  (t/is (= #{1 2}
-           (sut/factors 2)))
+  (t/is (= 7
+           (sut/factorsum 4)))
 
-  (t/is (= #{1 2 4}
-           (sut/factors 4)))
-
-  (t/is (= #{1 2 3 6}
-           (sut/factors 6))))
+  (t/is (= 12
+           (sut/factorsum 6))))
