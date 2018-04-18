@@ -2,7 +2,8 @@
   (:require [advent.core :refer [slurp-resource]]
             [instaparse.core :as insta]
             [clojure.string :as str]
-            [clojure.core.memoize :as memoize]))
+            [clojure.core.memoize :as memoize]
+            [clojure.set :as set]))
 
 (def raw-parse-puzzle
   (insta/parser
@@ -68,17 +69,39 @@
          (mapcat #(molecules-of-length length % replacements (inc num-transforms))
                  ms)))))))
 
-(defn find-shortest-transform [final-molecule replacements]
+(defn find-shortest-transform [final-molecule initial-molecule replacements]
   (let [final-molecule-length (count final-molecule)]
    (->> replacements
-        (molecules-of-length final-molecule-length "e")
-        (filter #(= final-molecule (second %)))
-        (map first)
-        (apply min Integer/MAX_VALUE))))
+        (molecules-of-length final-molecule-length initial-molecule)
+        (some #(when (= final-molecule (second %))
+                 (first %))))))
+
+(defn invert-replacements [replacements]
+  (->> (for [[k vs] replacements
+             v vs]
+         [v k])
+       (apply transform-transforms)))
+
+(defn reductions-from
+  ([molecule replacements]
+   (reductions-from molecule replacements 1))
+  ([molecule replacements num-transforms]
+   (let [ms (filter #(or (= % "e")
+                         (not (str/includes? % "e")))
+                    (all-replacements molecule replacements))]
+     (lazy-cat
+      (map (fn [m] [num-transforms m]) ms)
+      (mapcat #(reductions-from % replacements (inc num-transforms)) ms)))))
+
+(defn find-shortest-transform-fast [initial-molecule final-molecule replacements]
+  (->> (invert-replacements replacements)
+       (reductions-from initial-molecule)
+       (some #(when (= final-molecule (second %))
+                (first %)))))
 
 (defn day-19-2 [file-name]
   (let [[replacements final-molecule]
         (->> file-name
              slurp-resource
              parse-puzzle)]
-    (find-shortest-transform final-molecule replacements)))
+    (find-shortest-transform final-molecule "e" replacements)))
