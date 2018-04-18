@@ -59,3 +59,15 @@
                (step-board [100 100] grid))
              grid
              (range 100)))))
+
+(defn day-18-2 [file-name]
+  (let [grid (->> file-name
+                  slurp-resource
+                  parse-grid
+                  dense->sparse)]
+    (count
+     (reduce (fn [grid _]
+               (conj (step-board [100 100] grid)
+                     [0 0] [0 99] [99 0] [99 99]))
+             (conj grid [0 0] [0 99] [99 0] [99 99])
+             (range 100)))))
