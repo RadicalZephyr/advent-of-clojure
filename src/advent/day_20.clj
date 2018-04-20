@@ -103,3 +103,42 @@
          (keep #(make-factorization primes %))
          sort
          (some #(when (>= (factorsum %) x) %)))))
+
+(defn presents-seq2
+  ([] (presents-seq2 1))
+  ([i]
+   (lazy-seq
+    (let [num-presents (* 11 i)]
+      (concat
+       (map #(vector (* i %) num-presents) (range 1 51))
+       (presents-seq2 (inc i)))))))
+
+(defn failed-day-20-2 [x]
+  (->> (presents-seq2)
+       (take 30000000)
+       (reduce
+        (fn [ret [k presents]]
+          (assoc! ret k (+ (get ret k 0) presents)))
+        (transient {}))
+       (persistent!)
+       (filter #(>= (second %) x))
+       (map first)
+       (apply min)))
+
+(defn factorsum2 [x]
+  (->> (range 2 (inc (quot x 2)))
+       (keep #(when (and (= 0 (mod x %))
+                         (>= 50 (/ x %)))
+                (* 11 %)))
+       (apply + 11 (* 11 x))))
+
+(defn day-20-2 [x]
+  (let [primes (prime-seq)]
+    (->> (range 15)
+         (drop 1)
+         (mapcat partitions)
+         (mapcat #(vector % (conj % 0)))
+         (mapcat combo/permutations)
+         (keep #(make-factorization primes %))
+         sort
+         (some #(when (>= (factorsum2 %) x) %)))))
